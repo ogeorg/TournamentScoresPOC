@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Side-by-Side Iframes</title>
+    <style>
+ /* Fill the whole screen */
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: sans-serif;
+        }
+
+        /* Main Flex Container (Horizontal) */
+        .page-wrapper {
+            display: flex;
+            height: 100vh; /* Full viewport height */
+            gap: 15px;
+            padding: 15px;
+            box-sizing: border-box;
+            background-color: #f4f4f4;
+        }
+
+        /* Generic Column Styling */
+        .column {
+            display: flex;
+            flex-direction: column;
+            flex: 1; /* Both columns take equal width */
+            gap: 15px;
+        }
+
+        /* Wrapper for title + iframe */
+        .frame-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        h2 {
+            margin: 0;
+            padding: 10px;
+            font-size: 1.1rem;
+            background: #eee;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+        }
+
+        iframe {
+            flex: 1; /* Makes iframe fill the remaining vertical space */
+            border: none;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="page-wrapper">
+        
+        <div class="column">
+            <div class="frame-container">
+                <h2>Partido 1</h2>
+                <iframe src="game-updater/g1"></iframe>
+            </div>
+            <div class="frame-container">
+                <h2>Partido 2</h2>
+                <iframe src="game-updater/g2"></iframe>
+            </div>
+        </div>
+
+        <div class="column stack-column">
+            <div class="frame-container">
+                <h2>Mobile 1</h2>
+                <iframe src="viewcounter.html"></iframe>
+            </div>
+            <div class="frame-container">
+                <h2>Mobile 2</h2>
+                <iframe src="viewcounter.html"></iframe>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>

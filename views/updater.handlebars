@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Counter Update</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body {
+            font-family: sans-serif;
+            text-align: center;
+            padding: 50px;
+        }
+
+        .counter-box {
+            margin: 20px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            display: inline-block;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        span {
+            font-weight: bold;
+            font-size: 20px;
+            margin: 0 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="counter-box">
+        <h3>{{game.nameA}}</h3>
+        <button class="update-btn" data-type="a" data-change="1">A +</button>
+        <span id="val-a">0</span>
+        <button class="update-btn" data-type="a" data-change="-1">A -</button>
+    </div>
+
+    <div class="counter-box">
+        <h3>{{game.nameB}}</h3>
+        <button class="update-btn" data-type="b" data-change="1">B +</button>
+        <span id="val-b">0</span>
+        <button class="update-btn" data-type="b" data-change="-1">B -</button>
+    </div>
+
+    <script>
+        let a = 0;
+        let b = 0;
+
+        $(document).ready(function () {
+            $('.update-btn').click(function () {
+                const type = $(this).data('type');
+                const change = parseInt($(this).data('change'));
+
+                // Update local values
+                if (type === 'a') a += change;
+                else b += change;
+
+                // Update UI
+                $('#val-a').text(a);
+                $('#val-b').text(b);
+
+                $.ajax({
+                    url: '/update/{{gameid}}',
+                    type: 'POST',
+                    contentType: 'application/json', // <--- This tells Express to use the JSON parser
+                    data: JSON.stringify({ counterA: a, counterB: b }), // <--- Convert object to a JSON string
+                    success: function (response) {
+                        console.log(response);
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>

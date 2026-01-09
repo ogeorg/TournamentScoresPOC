@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>SSE Counter Monitor</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body {
+            font-family: sans-serif;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            justify-content: center;
+        }
+
+        .card-line {
+            display: flex;
+            gap: 20px;
+            padding: 20px;
+            justify-content: center;
+        }
+
+        .counter-card {
+            padding: 20px;
+            border: 2px solid #333;
+            border-radius: 10px;
+            text-align: center;
+            min-width: 150px;
+        }
+
+        .goals {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #007bff;
+        }
+
+        .label {
+            font-size: 1.2rem;
+            color: #666;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="cards">
+
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            // 1. Initialize the SSE connection
+            const eventSource = new EventSource('/events');
+
+            // 2. Listen for messages from the server
+            eventSource.onmessage = function (event) {
+                // Parse the JSON data sent by Node.js
+                console.log(event.data);
+
+                const data = JSON.parse(event.data);
+                let msgType = data[0];
+                let msgData = data[1];
+                if (msgType == 'games') {
+                    $('#cards').empty();
+                    for (var gameId in msgData) {
+                        let game = msgData[gameId];
+                        console.log(game);
+                        let card1 = `<div class="counter-card"><div class="label">${game.name1}</div><div data-goalid="${gameId}:1" class="goals">0</div></div>`;
+                        let card2 = `<div class="counter-card"><div class="label">${game.name2}</div><div data-goalid="${gameId}:2" class="goals">0</div></div>`;
+                        $('#cards').append(`<div class='card-line'>${card1}${card2}</div>`);
+                    }
+                } else if (msgType == 'goals') {
+                    $('.goals').each(function() {
+                        let $this = $(this);
+                        let [gameid, pos] = $this.data('goalid').split(':');
+                        $this.text(msgData[gameid][pos-1]);
+                    });
+                }
+
+                // 3. Update the divs using jQuery
+                $('#counter-a').text(data[0]);
+                $('#counter-b').text(data[1]);
+            };
+
+            // Error handling
+            eventSource.onerror = function (err) {
+                console.error("SSE connection failed:", err);
+            };
+        });
+    </script>
+</body>
+
+</html>
